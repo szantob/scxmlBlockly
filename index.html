@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>SCXML Editor</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="./css/style.css">
+  <script src="http://desm-visualization.herokuapp.com/schviz.js"></script>
+  <script src="js/lib/Blockly/blockly_compressed.js"></script>
+  <script src="js/lib/Blockly/blocks_compressed.js"></script>
+  <script src="js/lib/Blockly/msg/js/en.js"></script>
+  <script src="js/lib/BlocklyDOM/BlocklyDOM.js"></script>
+  <script src="js/lib/abcHashTable/abcHashTable.js"></script>
+  <script src="js/model/blocks.js"></script>
+  <script src="js/model/scxml.js"></script>
+  <script src="js/main.js"></script>
+  <style src="css/style.css"></style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="dropdown">
+    <button class="dropbtn">File
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <button onclick="onInit()">New</button>
+      <button onclick="onOpen()">Open</button>
+      <button onclick="onSave()">Save</button>
+      <button onclick="onDownload()">Download</button>
+      <button onclick="onUpload()">Upload</button>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Edit
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <button onclick="onUndo()">Undo</button>
+      <button onclick="onRedo()">Redo</button>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Model
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <button onclick="onRead()">Generate</button>
+    </div>
+  </div>
+</nav>
+<main class="row" id="blocklyArea">
+  <div id="blocklyDiv" style="height: 650px; width: 1280px;">
+    <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+		<block type="node">
+			<field name="name">name</field>
+		</block>
+		<block type="transition">
+			<field name="guard">event</field>
+			<field name="to">node</field>
+		</block>
+		<block type="event">
+			<field name="event">entry</field>
+			<field name="do">do</field>
+		</block>
+	</xml>
+    <xml xmlns="https://developers.google.com/blockly/xml" id="workspaceBlocks" style="display: none"></xml>
+  </div>
+</main>
+
+<footer class="footer">
+  <h2>Footer</h2>
+</footer>
+
+<script>
+  const toolbox = document.getElementById("toolbox");
+  const options = {
+    toolbox : toolbox,
+    collapse : true,
+    comments : true,
+    disable : true,
+    maxBlocks : Infinity,
+    trashcan : true,
+    horizontalLayout : false,
+    toolboxPosition : 'start',
+    css : true,
+    media : 'https://blockly-demo.appspot.com/static/media/',
+    rtl : false,
+    scrollbars : true,
+    sounds : true,
+    oneBasedIndex : true
+  };
+  const blocklyArea = document.getElementById('blocklyArea');
+  const blocklyDiv = document.getElementById('blocklyDiv');
+  const workspace = Blockly.inject(blocklyDiv,{toolbox: document.getElementById('toolbox')});
+
+  var onresize = function(e) {
+    // Compute the absolute coordinates and dimensions of blocklyArea.
+    var element = blocklyArea;
+    var x = 0;
+    var y = 0;
+    do {
+      x += element.offsetLeft;
+      y += element.offsetTop;
+      element = element.offsetParent;
+    } while (element);
+    // Position blocklyDiv over blocklyArea.
+    blocklyDiv.style.left = x + 'px';
+    blocklyDiv.style.top = y + 'px';
+    blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+    blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+    Blockly.svgResize(workspace);
+  };
+  window.addEventListener('resize', onresize, false);
+  onresize();
+  Blockly.svgResize(workspace);
+  window.onload = function(){
+    onLoad();
+  };
+
+</script>
+</body>
+</html>
